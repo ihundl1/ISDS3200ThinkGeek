@@ -1,12 +1,25 @@
+import csv
 import requests
+import datetime
 from bs4 import BeautifulSoup
 
-baseURL = "https://www.thinkgeek.com/"
-categories = {'clothing/': 'Clothing', 'accessories/': 'Accessories', 'bags-backpacks/': 'Bags & Backpacks',
-              'home-office/': 'Home & Office', 'toys-games/': 'Toys &  Games', 'collectibles/': 'Collectibles',
-              'tools-outdoor-survival/': 'Tools, Outdoor & Survival', 'electronics-gadgets/': 'Electronics & Gadgets'}
+now = datetime.datetime.now()
+
+csvFile = open('thinkGeekProducts.csv', 'a', newline='')
+writer = csv.writer(csvFile)
+#writer.writerow(['Date', 'Product Name', 'Category', 'Subcategory', 'Price', 'Sale', 'Savings', 'Fandom', 'Character',
+#                 'Stock'])
+
+baseURL = "https://www.thinkgeek.com/accessories/"
+categories = {'jewelry/': 'Jewelry', 'footwear/': 'Footwear', 'keychains/': 'Keychains & Bag Accessories',
+              'wallets/': 'Wallets', 'hats-hair/': 'Hats & Hair', 'ties-cufflinks/': 'Ties & Cufflinks',
+              'belts-suspenders/': 'Belts & Suspenders', 'scarves/': 'Scarves', 'cosmetics-body/': 'Cosmetics & Body',
+              'purses-handbags/': 'Purses & Handbags', 'pouches-coin-purses/': 'Pouches & Coin Purses',
+              'other/': 'Other Accessories'}
 for c in categories:
     cat = categories[c]
+
+    print("Scraping ", cat)
     counter = 0
     while True:
         pageLoop = "feature/desc/" + str(counter) + "/100/"
@@ -25,10 +38,10 @@ for c in categories:
                 except ValueError:
                     price = 0
                 onSale = product.get('data-on-sale')
-                if onSale == 1:
-                    sale = "Yes"
+                if onSale == "1":
+                    sale = "TRUE"
                 else:
-                    sale = "No"
+                    sale = "FALSE"
                 savings = product.get('data-sale-percent-savings')
                 fandom = product.get('data-fandom').replace('["', '').replace('"]', '')
                 character = product.get('data-character').replace('["', '').replace('"]', '')
@@ -37,10 +50,11 @@ for c in categories:
                     inStock = "Out of Stock"
                 else:
                     inStock = "In Stock"
-                print(name, price, sale, savings, cat, fandom, character, inStock)
+                writer.writerow([now.date(), name, 'Accessories', cat, price, sale, savings, fandom,
+                                 character.encode("utf-8"), inStock])
             counter += 1
         else:
-            print("No more items!")
+            print("End of ", cat)
             break
 
 print("Scraping complete")
