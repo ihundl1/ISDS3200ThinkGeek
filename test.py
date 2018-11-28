@@ -1,14 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
+import csv
 
-baseURL = "https://www.thinkgeek.com/accessories/"
-categories = {'jewelry/': 'Jewelry', 'footwear/': 'Footwear', 'keychains/': 'Keychains & Bag Accessories',
-              'wallets/': 'Wallets', 'hats-hair/': 'Hats & Hair', 'ties-cufflinks/': 'Ties & Cufflinks',
-              'belts-suspenders/': 'Belts & Suspenders', 'scarves/': 'Scarves', 'cosmetics-body/': 'Cosmetics & Body',
-              'purses-handbags/': 'Purses & Handbags', 'pouches-coin-purses/': 'Pouches & Coin Purses',
-              'other/': 'Other Accessories'}
+csvFile = open('productDescriptions.csv', 'r')
+next(csvFile)
+read = csv.reader(csvFile)
 
-for c in categories:
-    cat = categories[c]
-    print(cat)
-
+for row in read:
+    d = row[1]
+    print(d)
